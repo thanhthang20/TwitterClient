@@ -88,7 +88,8 @@ public class TimelineActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 //super.onSuccess(statusCode, headers, response);
                 Log.d("DEBUG", response.toString());
-                aTweets.addAll(Tweet.fromJsonArray(response));
+                aTweets.addAll(Tweet.fromJsonArray(getBaseContext(), response));
+
 
             }
 

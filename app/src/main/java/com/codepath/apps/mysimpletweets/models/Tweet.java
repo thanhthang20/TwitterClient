@@ -1,16 +1,39 @@
 package com.codepath.apps.mysimpletweets.models;
 
+import android.content.Context;
+import android.util.Log;
+
+import com.codepath.apps.mysimpletweets.TweetsDataBaseHelper;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by thangjs on 3/26/16.
  */
 public class Tweet {
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public void setUid(Long uid) {
+        this.uid = uid;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     private String body;
     private Long uid;
     private String createdAt;
@@ -46,7 +69,12 @@ public class Tweet {
         return tweet;
     }
 
-    public static ArrayList<Tweet> fromJsonArray(JSONArray jsonArray){
+    public static ArrayList<Tweet> fromJsonArray(Context context, JSONArray jsonArray){
+        TweetsDataBaseHelper databaseHelper = TweetsDataBaseHelper.getInstance(context);
+        databaseHelper.deleteAllTweetsAndUsers();
+
+
+
         ArrayList<Tweet> tweets = new ArrayList<>();
         for (int i = 0; i<jsonArray.length(); i++){
             try {
@@ -54,11 +82,18 @@ public class Tweet {
                 Tweet tweet = Tweet.fromJson(tweetObject);
                 if(tweet != null){
                     tweets.add(tweet);
+                    databaseHelper.addTweet(tweet);
                 }
             }catch (JSONException e){
                 e.printStackTrace();
                 continue;
             }
+
+        }
+        List<Tweet> posts = databaseHelper.getAllTweets();
+        Log.d("DEBUG", posts.toString());
+        for (Tweet post : posts) {
+            // do something
 
         }
         return tweets;
